@@ -1,6 +1,7 @@
 package se.opazoweb.DCGallery.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -9,16 +10,14 @@ public class DcChannel {
     @Id
     private String channelId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name="server_channel")
-    private String serverId;
+    @ManyToOne(fetch=FetchType.LAZY)
+    DcServer dcServer;
 
 
-    @OneToMany(mappedBy = "CHANNEL_ID")
-    private Set<DcImage> dcImages;
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="dcChannel")
+    private Set<DcImage> dcImages = new HashSet<>();
 
-    public DcChannel(String serverId, String channelId) {
-        this.serverId = serverId;
+    public DcChannel(String channelId) {
         this.channelId = channelId;
     }
 
@@ -26,12 +25,12 @@ public class DcChannel {
 
     }
 
-    public String getServerId() {
-        return serverId;
+    public DcServer getDcServer() {
+        return dcServer;
     }
 
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
+    public void setDcServer(DcServer dcServer) {
+        this.dcServer = dcServer;
     }
 
     public String getChannelId() {
@@ -52,5 +51,20 @@ public class DcChannel {
 
     public void addImage(DcImage newImage) {
         this.dcImages.add(newImage);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DcChannel dcChannel = (DcChannel) o;
+
+        return channelId != null ? channelId.equals(dcChannel.channelId) : dcChannel.channelId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return channelId != null ? channelId.hashCode() : 0;
     }
 }

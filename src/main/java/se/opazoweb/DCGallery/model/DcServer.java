@@ -1,34 +1,25 @@
 package se.opazoweb.DCGallery.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.List;
+import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class DcServer {
 
     @Id
-    private String serverId;
+    private String id;
     private String serverName;
 
-    @OneToMany(mappedBy = "SERVER_ID")
-    private Set<DcChannel> dcChannels;
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="dcServer")
+    private Set<DcChannel> dcChannels = new HashSet<>();
 
     public DcServer() {
     }
 
-    public DcServer(String serverName, String serverId) {
+    public DcServer(String serverName, String id) {
         this.serverName = serverName;
-        this.serverId = serverId;
-    }
-
-    public DcServer(String serverId, String serverName, Set<DcChannel> dcChannels) {
-        this.serverId = serverId;
-        this.serverName = serverName;
-        this.dcChannels = dcChannels;
+        this.id = id;
     }
 
     public String getServerName() {
@@ -39,12 +30,12 @@ public class DcServer {
         this.serverName = serverName;
     }
 
-    public String getServerId() {
-        return serverId;
+    public String getid() {
+        return id;
     }
 
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
+    public void setid(String id) {
+        this.id = id;
     }
 
     public Set<DcChannel> getDcChannels() {
@@ -53,5 +44,20 @@ public class DcServer {
 
     public void setDcChannels(Set<DcChannel> dcChannels) {
         this.dcChannels = dcChannels;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DcServer dcServer = (DcServer) o;
+
+        return id != null ? id.equals(dcServer.id) : dcServer.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

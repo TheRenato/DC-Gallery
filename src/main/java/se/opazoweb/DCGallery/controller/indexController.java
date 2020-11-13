@@ -23,8 +23,8 @@ public class indexController {
     @Value("${dc.client_id}")
     private String dcClientId;
 
-    @Value("${dc.bot_token}")
-    private String dcBotToken;
+    @Value("${dc.base_url}")
+    private String dcBaseUrl;
 
     @GetMapping("/")
     public String main(Model model) {
@@ -39,14 +39,11 @@ public class indexController {
             String server, Model model) {
 
         String link =
-                "https://discord.com/oauth2/authorize?client_id="
-                + dcClientId + "&scope=bot";
+                dcBaseUrl + dcClientId + "&scope=bot";
 
         model.addAttribute("server", server);
         model.addAttribute("message", server + title);
         model.addAttribute("link", link);
-
-        w
 
         return "index";
     }
@@ -75,10 +72,7 @@ public class indexController {
     private List<String> galleryList(String channelId) {
         List<String> galleryList = new ArrayList<>();
 
-        final DiscordClient client = DiscordClient.create(dcBotToken);
-        final GatewayDiscordClient gateway = client.login().block();
-
-        Channel channel = gateway.getChannelById(Snowflake.of(channelId)).block();
+//        Channel channel = gateway.getChannelById(Snowflake.of(channelId)).block();
 
         return galleryList;
     }
