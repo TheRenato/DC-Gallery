@@ -10,15 +10,18 @@ public class DcChannel {
     @Id
     private String channelId;
 
+    private String channelName;
+
     @ManyToOne(fetch=FetchType.LAZY)
     DcServer dcServer;
-
 
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="dcChannel")
     private Set<DcImage> dcImages = new HashSet<>();
 
-    public DcChannel(String channelId) {
+    public DcChannel(String channelId, String channelName, DcServer dcServer) {
         this.channelId = channelId;
+        this.dcServer = dcServer;
+        this.channelName = channelName;
     }
 
     public DcChannel() {

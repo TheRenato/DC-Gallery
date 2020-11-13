@@ -13,15 +13,18 @@ public class DcImage {
 
     private String fileName;
     private String fileUrl;
+    private String uploadDate;
 
     public DcImage() {
 
     }
 
-    public DcImage(String imageId, String fileName, String fileUrl) {
+    public DcImage(String imageId, DcChannel dcChannel, String fileName, String fileUrl, String uploadDate) {
         this.imageId = imageId;
+        this.dcChannel = dcChannel;
         this.fileName = fileName;
         this.fileUrl = fileUrl;
+        this.uploadDate = uploadDate;
     }
 
     public String getImageId() {
@@ -54,5 +57,13 @@ public class DcImage {
 
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
+    }
+
+    public String getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(String uploadDate) {
+        this.uploadDate = uploadDate;
     }
 }
