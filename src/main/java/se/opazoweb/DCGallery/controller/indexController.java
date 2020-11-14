@@ -1,20 +1,28 @@
 package se.opazoweb.DCGallery.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import se.opazoweb.DCGallery.model.DcChannel;
+import se.opazoweb.DCGallery.model.DcImage;
+import se.opazoweb.DCGallery.repositories.DcChannelRepo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class indexController {
 
 
     private String title = " DC - Image Gallery";
+
+    @Autowired
+    private DcChannelRepo dcChannelRepo;
 
     @Value("${dc.client_id}")
     private String dcClientId;
@@ -53,23 +61,31 @@ public class indexController {
             Model model
     ) {
 
-        String link =
-                "https://discord.com/oauth2/authorize?client_id="
-                        + dcClientId + "&scope=bot";
+        DcChannel dcChannel;
+        Set<DcImage> dcImages;
+
+        if (dcChannelRepo.existsById(channelId)) {
+            dcChannel = dcChannelRepo.findById(channelId).get();
+            System.out.println(dcChannel.getDcImages().isEmpty());
+
+            dcImages = dcChannel.getDcImages();
+            if (!dcImages.isEmpty()) {
+                model.addAttribute("images", dcImages);
+            }
+            model.addAttribute("h1title", "Gallery of "
+                    + dcChannel.getChannelName() + " @ "
+                    + dcChannel.getDcServer().getServerName()
+            );
+
+        } else {
+            System.out.println("is empty");
+            model.addAttribute("message", "Run !gallery build in your server or/and add the bot to your server first.");
+        }
 
         model.addAttribute("channelid", channelId);
-        model.addAttribute("message", title);
-        model.addAttribute("h1title", "Gallery of " + channelId);
-        model.addAttribute("link", link);
+        model.addAttribute("title", title);
+
 
         return "gallery";
-    }
-
-    private List<String> galleryList(String channelId) {
-        List<String> galleryList = new ArrayList<>();
-
-//        Channel channel = gateway.getChannelById(Snowflake.of(channelId)).block();
-
-        return galleryList;
     }
 }

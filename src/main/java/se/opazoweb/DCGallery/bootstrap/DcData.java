@@ -8,8 +8,10 @@ import discord4j.core.object.entity.Attachment;
 import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import se.opazoweb.DCGallery.model.DcChannel;
@@ -19,6 +21,8 @@ import se.opazoweb.DCGallery.repositories.DcChannelRepo;
 import se.opazoweb.DCGallery.repositories.DcImageRepo;
 import se.opazoweb.DCGallery.repositories.DcServerRepo;
 
+import java.util.Set;
+
 @Component
 public class DcData implements CommandLineRunner {
 
@@ -26,8 +30,12 @@ public class DcData implements CommandLineRunner {
     @Value("${dc.bot_token}")
     private String dcBotToken;
 
+    @Autowired
     private final DcChannelRepo dcChannelRepo;
+    @Autowired
     private final DcImageRepo dcImageRepo;
+
+    @Autowired
     private final DcServerRepo dcServerRepo;
 
     public DcData(DcChannelRepo dcChannelRepo, DcImageRepo dcImageRepo, DcServerRepo dcServerRepo) {
@@ -146,5 +154,9 @@ public class DcData implements CommandLineRunner {
             }
 
         }
+    }
+
+    public Set<DcImage> getChannelsImages(String channelId) {
+        return dcChannelRepo.findById(channelId).get().getDcImages();
     }
 }

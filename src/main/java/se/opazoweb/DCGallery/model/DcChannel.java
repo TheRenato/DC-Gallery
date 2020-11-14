@@ -44,6 +44,14 @@ public class DcChannel {
         this.channelId = channelId;
     }
 
+    public String getChannelName() {
+        return channelName;
+    }
+
+    public void setChannelName(String channelName) {
+        this.channelName = channelName;
+    }
+
     public Set<DcImage> getDcImages() {
         return dcImages;
     }
