@@ -5,13 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" th:href="@{webjars/bootstrap/4.2.1/css/bootstrap.min.css}"/>
-
-    <title th:text="${message}"></title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <script src="https://kit.fontawesome.com/33e7645090.js" crossorigin="anonymous"></script>
+    <title th:text="${title}"></title>
 </head>
 <body>
-<h1>- Hi -</h1>
+<div id="wrapper">
+    <div class = "header">
+        <h1 th:text="${h1title}">- Hi -</h1>
+        <h2 th:text="${channelid}">- Hi -</h2>
+    </div>
+    <div id="main-content">
+        <div class="flex-index">
+            <div class="flex-step">
 
-<a th:href="${link}">Add Server</a>
+            </div>
+        </div>
+        <div class="info-box">
+            <div class="info-box-icon">
+                <i class="fas fa-info-circle fa-3x"></i>
+            </div>
+            <div class="info-box-content">
+                <p th:text="${message}"></p>
+                <a th:href="${link}">Add Server Your Server</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>The ugglyness Created by Renato Opazo Salgado</p>
+        <p><a href="https://github.com/TheRenato">github.com/TheRenato</a></p>
+        <p>You are welcome to send us your own CSS.</p>
+        <h3>Renato: "I'm a developer not a designer"</h3>
+    </footer>
+</div>
 </body>
 </html>

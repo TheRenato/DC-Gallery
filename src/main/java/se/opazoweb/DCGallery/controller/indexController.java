@@ -78,11 +78,11 @@ public class indexController {
             );
 
         } else {
-            System.out.println("is empty");
+            model.addAttribute("h1title", "Gallery of ");
             model.addAttribute("message", "Run !gallery build in your server or/and add the bot to your server first.");
         }
 
-        model.addAttribute("channelid", channelId);
+        model.addAttribute("channelid", "Channel ID " + channelId);
         model.addAttribute("title", title);
 
 
