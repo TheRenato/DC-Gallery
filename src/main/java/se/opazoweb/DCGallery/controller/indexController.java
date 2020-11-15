@@ -46,7 +46,7 @@ String inviteLink =
             String server, Model model) {
 
         String link =
-                dcBaseUrl + dcClientId + "&scope=bot";
+                dcBaseUrl + dcClientId + "&scope=bot&permissions=84992";
 
         model.addAttribute("server", server);
         model.addAttribute("message", server + title);

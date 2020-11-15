@@ -25,3 +25,13 @@ The end goal is to get images from a specific Discord channel and show it in a b
 - You tell me. Put an issue, and we will se if I can implement it.
 - Some admin feature would maybe be nice?
 - I have some ideas, but it isn't the time to reveal them.
+
+### Webpage
+
+https://dcgallery.opazoweb.se
+
+### Bot invate link:
+https://discord.com/oauth2/authorize?client_id=775066993644535808&scope=bot&permissions=84992
+
+### Discord server:
+https://discord.gg/F3c9DrUZAW

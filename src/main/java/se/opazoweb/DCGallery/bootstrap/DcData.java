@@ -84,6 +84,7 @@ public class DcData implements CommandLineRunner {
             addChannelIfNotAdded(serverId, channelName, channelID);
 
             buildGallery(message, channelID);
+            channel.createMessage("Your gallery will now be created").block();
         }
 
         if (dcChannelRepo.existsById(channelID)) {
