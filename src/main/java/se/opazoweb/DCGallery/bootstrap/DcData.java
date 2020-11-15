@@ -5,13 +5,11 @@ import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Attachment;
-import discord4j.core.object.entity.Guild;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import se.opazoweb.DCGallery.model.DcChannel;
@@ -21,7 +19,7 @@ import se.opazoweb.DCGallery.repositories.DcChannelRepo;
 import se.opazoweb.DCGallery.repositories.DcImageRepo;
 import se.opazoweb.DCGallery.repositories.DcServerRepo;
 
-import java.util.Set;
+import java.util.Iterator;
 
 @Component
 public class DcData implements CommandLineRunner {
@@ -29,6 +27,18 @@ public class DcData implements CommandLineRunner {
 
     @Value("${dc.bot_token}")
     private String dcBotToken;
+
+    @Value("${gallery.baseurl}")
+    private String galleryBaseUrl;
+
+    @Value("${gallery.build_cmd}")
+    private String galleryBuildCmd;
+
+    @Value("${gallery.url_cmd}")
+    private String galleryUrlCmd;
+
+    @Value("${gallery.remove_cmd}")
+    private String galleryRemoveCmd;
 
     @Autowired
     private final DcChannelRepo dcChannelRepo;
@@ -52,7 +62,9 @@ public class DcData implements CommandLineRunner {
 
         gateway.on(MessageCreateEvent.class).subscribe(event -> {
             final Message message = event.getMessage();
-            handleDcMessage(message, gateway);
+            if (!message.getAuthor().get().isBot()) {
+                handleDcMessage(message, gateway);
+            }
         });
 
         gateway.onDisconnect().block();
@@ -68,24 +80,21 @@ public class DcData implements CommandLineRunner {
 
         addServerIfNotAdded(serverId, serverName);
 
-        if ("!gallery build".equals(message.getContent())) {
+        if (galleryBuildCmd.equals(message.getContent())) {
             addChannelIfNotAdded(serverId, channelName, channelID);
 
-            Flux<Message> messageBefore = message.getChannel().block().getMessagesBefore(message.getId());
-
-            Iterable<Message> itr = messageBefore.toIterable();
-
-            for (Message msg : itr) {
-                handleMessageWithAttachments(msg, channelID);
-            }
+            buildGallery(message, channelID);
         }
 
         if (dcChannelRepo.existsById(channelID)) {
-            if ("!gallery url".equals(message.getContent())) {
-                String urlBefore = "https://dcgallery.opazoweb.se/gallerys/";
+//            if (galleryRemoveCmd.equals(message.getContent())) {
+//               removeChannelAndImages(channelID);
+//            }
+
+            if (galleryUrlCmd.equals(message.getContent())) {
                 final String addUrlChannel = "channelid=" + channelID;
 
-                channel.createMessage(urlBefore + serverId + "?" + addUrlChannel).block();
+                channel.createMessage(galleryBaseUrl + serverId + "?" + addUrlChannel).block();
             }
             handleMessageWithAttachments(message, channelID);
         }
@@ -96,7 +105,6 @@ public class DcData implements CommandLineRunner {
         if(!dcServerRepo.existsById(serverId)) {
             DcServer dcServer = new DcServer(serverName, serverId);
             dcServerRepo.save(dcServer);
-
         }
     }
 
@@ -110,6 +118,15 @@ public class DcData implements CommandLineRunner {
                     );
             dcChannelRepo.save(dcChannel);
 
+        }
+    }
+
+    private void buildGallery(Message message, String channelID) {
+        Flux<Message> messageBefore = message.getChannel().block().getMessagesBefore(message.getId());
+        Iterable<Message> itr = messageBefore.toIterable();
+
+        for (Message msg : itr) {
+            handleMessageWithAttachments(msg, channelID);
         }
     }
 
@@ -136,6 +153,16 @@ public class DcData implements CommandLineRunner {
             }
 
         }
+    }
+
+    private void removeChannelAndImages(String channelID) {
+        Iterator<DcImage> imgItr = dcChannelRepo.findById(channelID).get().getDcImages().iterator();
+
+        while (imgItr.hasNext()) {
+            dcImageRepo.deleteById(imgItr.next().getImageId());
+        }
+
+        dcChannelRepo.deleteById(channelID);
     }
 
 }

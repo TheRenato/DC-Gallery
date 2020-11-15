@@ -10,15 +10,15 @@ The end goal is to get images from a specific Discord channel and show it in a b
 ### Status
 
 ##### DC
-* Messy
-* Locally got the API get Server ID and Channel ID from DC
-* Succeeded to get the message attachments url.
-* Decided to store some data in Databases for some persistent data. 
+* Functional
+* With the command "!gallery build" it will add the channel to the database and build the gallery.
+* With the command "!gallery url" you will get the url of the channels gallery.
+* You can't yet remove channel and its images from the webpage, but I will implement the remove channel with the command "!gallery remove"
+* Will now ignore bots.
 
 ##### Spring
-* Also, messy.
-* Got it working with dynamic subpages.
-* Still, no content.
+* Still, a bit messy, but working
+
 
 ### Future Feature
 
