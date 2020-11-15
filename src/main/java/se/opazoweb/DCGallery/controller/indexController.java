@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import se.opazoweb.DCGallery.model.DcChannel;
 import se.opazoweb.DCGallery.model.DcImage;
 import se.opazoweb.DCGallery.repositories.DcChannelRepo;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -29,11 +26,17 @@ public class indexController {
 
     @Value("${dc.base_url}")
     private String dcBaseUrl;
+String inviteLink =
+            dcBaseUrl + dcClientId + "&scope=bot";
 
     @GetMapping("/")
     public String main(Model model) {
+        String inviteLink =
+                dcBaseUrl + dcClientId + "&scope=bot";
 
-        model.addAttribute("message", title);
+        model.addAttribute("h1title", title);
+        model.addAttribute("link", inviteLink);
+        model.addAttribute("message", "Don't forget to add our bot to your server!");
         return "index";
     }
 
@@ -61,12 +64,14 @@ public class indexController {
             Model model
     ) {
 
+        String inviteLink =
+                dcBaseUrl + dcClientId + "&scope=bot";
+
         DcChannel dcChannel;
         Set<DcImage> dcImages;
 
         if (dcChannelRepo.existsById(channelId)) {
             dcChannel = dcChannelRepo.findById(channelId).get();
-            System.out.println(dcChannel.getDcImages().isEmpty());
 
             dcImages = dcChannel.getDcImages();
             if (!dcImages.isEmpty()) {
@@ -84,6 +89,7 @@ public class indexController {
 
         model.addAttribute("channelid", "Channel ID " + channelId);
         model.addAttribute("title", title);
+        model.addAttribute("link", inviteLink);
 
 
         return "gallery";

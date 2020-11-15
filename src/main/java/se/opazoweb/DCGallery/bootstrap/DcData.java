@@ -68,16 +68,6 @@ public class DcData implements CommandLineRunner {
 
         addServerIfNotAdded(serverId, serverName);
 
-        if ("!ping".equals(message.getContent())) {
-            Iterable<Guild> guilds = gateway.getGuilds().toIterable();
-
-            for (Guild guild : guilds) {
-                System.out.println(guild.getName());
-            }
-
-            channel.createMessage("Pong!").block();
-        }
-
         if ("!gallery build".equals(message.getContent())) {
             addChannelIfNotAdded(serverId, channelName, channelID);
 
@@ -90,17 +80,15 @@ public class DcData implements CommandLineRunner {
             }
         }
 
-        if ("!gallery url".equals(message.getContent())) {
-            String urlBefore = "http://localhost/gallerys/";
-            final String addUrlServer = message.getGuildId().get().asString();
-            final String addUrlChannel = "channelid=" + message.getChannelId().asString();
+        if (dcChannelRepo.existsById(channelID)) {
+            if ("!gallery url".equals(message.getContent())) {
+                String urlBefore = "https://dcgallery.opazoweb.se/gallerys/";
+                final String addUrlChannel = "channelid=" + channelID;
 
-            channel.createMessage(urlBefore + addUrlServer + "?" + addUrlChannel).block();
+                channel.createMessage(urlBefore + serverId + "?" + addUrlChannel).block();
+            }
+            handleMessageWithAttachments(message, channelID);
         }
-
-//
-//            System.out.println("Author Name: " + message.getAuthor().get().getUsername());
-//            System.out.println("Author ID: " + message.getAuthor().get().getId().asString());
 
     }
 
@@ -109,8 +97,6 @@ public class DcData implements CommandLineRunner {
             DcServer dcServer = new DcServer(serverName, serverId);
             dcServerRepo.save(dcServer);
 
-            System.out.println("Server saved");
-            System.out.println("count " + dcServerRepo.count());
         }
     }
 
@@ -124,8 +110,6 @@ public class DcData implements CommandLineRunner {
                     );
             dcChannelRepo.save(dcChannel);
 
-            System.out.println("channel Saved");
-            System.out.println("count " + dcChannelRepo.count());
         }
     }
 
@@ -148,15 +132,10 @@ public class DcData implements CommandLineRunner {
                     DcImage dcImage = new DcImage(imageId, theChannel, filename, url, time);
                     dcImageRepo.save(dcImage);
 
-                    System.out.println("image Saved");
-                    System.out.println("count " + dcImageRepo.count());
                 }
             }
 
         }
     }
 
-    public Set<DcImage> getChannelsImages(String channelId) {
-        return dcChannelRepo.findById(channelId).get().getDcImages();
-    }
 }
